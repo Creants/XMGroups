@@ -1,6 +1,6 @@
 'use-strict'
 import {AppRegistry} from 'react-native';
-import XMGroups from './src/container/app';
+import XMGroups from './src/containers/app';
 
 import "./main";
 

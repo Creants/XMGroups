@@ -7,13 +7,14 @@ import {
 } from 'react-native';
 
 import Menu from '../components/menu'
+import Map from '../components/map'
 
 export default class XMGroups extends Component {
 
   render() {
     return (
-      <Menu>
-      </Menu>
+      <Map>
+      </Map>
     ); // end return
   } // end render
 

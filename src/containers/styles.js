@@ -30,6 +30,18 @@ var styles = StyleSheet.create ({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#F6A623',
+    textAlign: 'center',
+  },
+
+  listviewCenter: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+
+  map: {
+    width: width,
+    height: height,
   },
 
 });
