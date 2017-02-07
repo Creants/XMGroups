@@ -39,9 +39,12 @@ var styles = StyleSheet.create ({
     flex: 1,
   },
 
-  map: {
-    width: width,
-    height: height,
+  mapContent: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 
 });

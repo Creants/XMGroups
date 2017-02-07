@@ -46,7 +46,7 @@ class  Map extends Component {
         <MapView
           region={this.state.region}
           onRegionChange={this.onRegionChange}
-          style={styles.map}
+          style={styles.mapContent}
           />
       </View>
     );
