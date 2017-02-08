@@ -37,16 +37,18 @@ var styles = StyleSheet.create({
     },
 
     mapContent: {
-        flex:1,
+      flex: 1,
     },
 
     mapInfo: {
         height: 200,
-        bottom: 0,
-        width: 200,
+        alignSelf: 'stretch',
+        backgroundColor: 'blue',
         position: 'absolute',
         left: 0,
         right: 0,
+        bottom: -50,
+        backgroundColor: 'red'
     },
 
 });

@@ -29,7 +29,7 @@ class Map extends Component {
                 latitude: 0,
                 longitude: 0,
                 latitudeDelta: sizes.sizeLatitudeDelta,
-                longitudeDelta: sizes.sizeLongtitudeDelta,
+                longitudeDelta: sizes.sizeLongtitudeDelta
             }
         };
 
@@ -67,13 +67,18 @@ class Map extends Component {
 
     render() {
         return (
-            <View style={[styles.container]}>
-                <MapView region={this.state.region} onRegionChange={this.onRegionChange} style={styles.mapContent}>
-                    <View ref={(circle) => {
-                        this.circle = circle;
-                    }} style={styles.mapInfo} {...this._panResponder.panHandlers}></View>
-                </MapView>
-            </View>
+          <View style={styles.container}>
+            <MapView region={this.state.region} onRegionChange={this.onRegionChange} style={styles.mapContent}>
+                <MapView.Marker title="Citi Field" description="center field" coordinate={{
+                    latitude: this.state.region.latitude,
+                    longitude: this.state.region.longitude
+                }} pinColor="blue"/>
+            </MapView>
+
+            <Marker ref={(circle) => {
+                this.circle = circle;
+            }} style={styles.mapInfo} {...this._panResponder.panHandlers}/>
+          </View>
         );
     } // render
 
@@ -87,13 +92,13 @@ class Map extends Component {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
                     latitudeDelta: sizes.sizeLatitudeDelta,
-                    longitudeDelta: sizes.sizeLongtitudeDelta,
+                    longitudeDelta: sizes.sizeLongtitudeDelta
                 }
             });
 
         }, (error) => alert(JSON.stringify(error)), {
             enableHighAccuracy: false,
-            timeout: 20000,
+            timeout: 20000
         });
 
         this.watchID = navigator.geolocation.watchPosition((position) => {

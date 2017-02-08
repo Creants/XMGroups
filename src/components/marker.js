@@ -5,11 +5,14 @@ import {View} from 'react-native';
 
 class Marker extends Component {
 
+    setNativeProps(nativeProps) {
+        this._root .setNativeProps(nativeProps);
+    }
+
     render() {
         return (
-          <View style={styles.container}>
-
-          </View>
+            <View ref={component => this._root = component} {...this.props}>
+            </View>
         );
     }
 
