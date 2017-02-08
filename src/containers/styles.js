@@ -1,4 +1,4 @@
-import {StyleSheet,Dimensions} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 
 var {height, width} = Dimensions.get('window');
 
@@ -11,7 +11,7 @@ var styles = StyleSheet.create({
 
     containerCenter: {
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     },
 
     btnCatelogry: {
@@ -37,7 +37,7 @@ var styles = StyleSheet.create({
     },
 
     mapContent: {
-      flex: 1,
+        flex: 1
     },
 
     mapInfo: {
@@ -50,6 +50,22 @@ var styles = StyleSheet.create({
         bottom: 0,
         backgroundColor: 'transparent'
     },
+
+    mapInfoBorder: {
+        backgroundColor: '#F5F3EE',
+        borderWidth: 1,
+        borderColor: '#FFFFFF',
+        borderRadius: 12,
+        shadowColor: '#D9AB61',
+        shadowOpacity: 4,
+        shadowOffset: {
+            width: 0,
+            height: -2
+        },
+        flex: 1,
+        top: 20
+
+    }
 
 });
 
