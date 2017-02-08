@@ -2,6 +2,7 @@
 
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, ListView} from 'react-native';
+import Map from './map'
 
 var catelogryData = [
     {
@@ -34,9 +35,16 @@ class Menu extends Component {
     } // end render
 
     // btnMapOnPress
-    btnMapOnPress(key) {
-        switch (key) {
+    btnMapOnPress(dic) {
+        switch (dic.key) {
             case '1':
+                {
+                    this.props.navigator.push({name: 'mapScreen',
+                      title: dic.title,
+                      component: Map,
+                      passProps: {}
+                    })
+                }
                 break;
             default:
                 break;
@@ -47,7 +55,7 @@ class Menu extends Component {
     // createButtonCatelogry
     createButtonCatelogry(property) {
         return (
-            <TouchableOpacity style={[styles.btnCatelogry, styles.containerCenter]} onPress={this.btnMapOnPress.bind(this, property.key)}>
+            <TouchableOpacity style={[styles.btnCatelogry, styles.containerCenter]} onPress={this.btnMapOnPress.bind(this, property)}>
                 <Text style={[styles.btnCatelogryTitle]}>
                     {property.title}
                 </Text>
