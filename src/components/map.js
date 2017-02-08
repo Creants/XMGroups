@@ -56,7 +56,7 @@ class Map extends Component {
         this._previousTop = 0;
         this._circleStyles = {
             style: {
-                top: this._previousTop,
+                bottom: -100,
                 backgroundColor: 'green'
             }
         };
@@ -66,10 +66,11 @@ class Map extends Component {
     render() {
         return (
             <View style={[styles.container]}>
-                <MapView region={this.state.region} onRegionChange={this.onRegionChange} style={styles.mapContent}/>
+                <MapView region={this.state.region} onRegionChange={this.onRegionChange} style={styles.mapContent}>
                   <View ref={(circle) => {
                       this.circle = circle;
                   }} style={styles.mapInfo} {...this._panResponder.panHandlers}/>
+                </MapView>
             </View>
         );
     } // end render
@@ -134,13 +135,13 @@ class Map extends Component {
     }
 
     _handlePanResponderMove(e : Object, gestureState : Object) {
-        this._circleStyles.style.top = this._previousTop + gestureState.dy;
+        this._circleStyles.style.bottom = this._previousTop - gestureState.dy;
         this._updateNativeStyles();
     }
 
     _handlePanResponderEnd(e : Object, gestureState : Object) {
         this._unHighlight();
-        this._previousTop += gestureState.dy;
+        this._previousTop -= gestureState.dy;
     }
 
 } // end class

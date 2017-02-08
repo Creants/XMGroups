@@ -1,5 +1,7 @@
 import {StyleSheet,Dimensions} from 'react-native';
 
+var {height, width} = Dimensions.get('window');
+
 var styles = StyleSheet.create({
 
     container: {
@@ -35,18 +37,15 @@ var styles = StyleSheet.create({
     },
 
     mapContent: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
+        flex:1,
     },
 
     mapInfo: {
-        height: 100,
-        alignSelf: 'stretch',
-        top: 0,
+        height: 200,
+        bottom: -100,
+        position: 'absolute',
         left: 0,
+        right: 0,
     },
 
 });
