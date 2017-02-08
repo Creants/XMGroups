@@ -8,6 +8,8 @@ import
     PanResponder
 }
 from 'react-native';
+import Marker from './marker';
+
 import MapView from 'react-native-maps';
 
 class Map extends Component {
@@ -69,7 +71,8 @@ class Map extends Component {
                 <MapView region={this.state.region} onRegionChange={this.onRegionChange} style={styles.mapContent}>
                   <View ref={(circle) => {
                       this.circle = circle;
-                  }} style={styles.mapInfo} {...this._panResponder.panHandlers}/>
+                  }} style={styles.mapInfo}  {...this._panResponder.panHandlers}>
+                </View>
                 </MapView>
             </View>
         );
