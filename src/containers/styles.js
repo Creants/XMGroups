@@ -42,7 +42,8 @@ var styles = StyleSheet.create({
 
     mapInfo: {
         height: 200,
-        bottom: -100,
+        bottom: 0,
+        width: 200,
         position: 'absolute',
         left: 0,
         right: 0,

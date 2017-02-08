@@ -29,7 +29,7 @@ class Map extends Component {
                 latitude: 0,
                 longitude: 0,
                 latitudeDelta: sizes.sizeLatitudeDelta,
-                longitudeDelta: sizes.longitudeDelta
+                longitudeDelta: sizes.sizeLongtitudeDelta,
             }
         };
 
@@ -63,20 +63,19 @@ class Map extends Component {
             }
         };
 
-    } // end componentWillMount
+    } // componentWillMount
 
     render() {
         return (
             <View style={[styles.container]}>
                 <MapView region={this.state.region} onRegionChange={this.onRegionChange} style={styles.mapContent}>
-                  <View ref={(circle) => {
-                      this.circle = circle;
-                  }} style={styles.mapInfo}  {...this._panResponder.panHandlers}>
-                </View>
+                    <View ref={(circle) => {
+                        this.circle = circle;
+                    }} style={styles.mapInfo} {...this._panResponder.panHandlers}></View>
                 </MapView>
             </View>
         );
-    } // end render
+    } // render
 
     componentDidMount() {
 
@@ -88,14 +87,13 @@ class Map extends Component {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
                     latitudeDelta: sizes.sizeLatitudeDelta,
-                    longitudeDelta: sizes.sizeLongtitudeDelta
+                    longitudeDelta: sizes.sizeLongtitudeDelta,
                 }
             });
 
         }, (error) => alert(JSON.stringify(error)), {
-            enableHighAccuracy: true,
+            enableHighAccuracy: false,
             timeout: 20000,
-            maximumAge: 1000
         });
 
         this.watchID = navigator.geolocation.watchPosition((position) => {
@@ -103,11 +101,15 @@ class Map extends Component {
             this.setState({lastPosition});
         });
 
-    } // end componentDidMount
+    } //  componentDidMount
+
+    componentWillUnmount() {
+        navigator.geolocation.clearWatch(this.watchID);
+    }
 
     onRegionChange(region) {
         this.setState({region});
-    } // end onRegionChange
+    } // onRegionChange
 
     _highlight() {
         this._circleStyles.style.backgroundColor = 'blue';
@@ -147,6 +149,6 @@ class Map extends Component {
         this._previousTop -= gestureState.dy;
     }
 
-} // end class
+} // end
 
 module.exports = Map;

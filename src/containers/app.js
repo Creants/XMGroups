@@ -10,16 +10,11 @@ import Guide from '../components/guide'
 export default class XMGroups extends Component {
 
     render() {
-        // return (<Navigator initialRoute={{
-        //     name: "menuScreen",
-        //     title: "Menu",
-        //     component: Menu
-        // }} renderScene={this.renderScene}/>);
-        // // end return
-
-        return(
-          <Map/>
-        );
+        return (<Navigator initialRoute={{
+            name: "menuScreen",
+            title: "Menu",
+            component: Menu
+        }} renderScene={this.renderScene}/>);
     } // end render
 
     renderScene(route, navigator) {

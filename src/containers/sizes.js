@@ -6,8 +6,8 @@ var {height, width} = Dimensions.get('window');
 
 var sizes =  {
 
-  sizeLatitudeDelta : 0.01,
-  sizeLongtitudeDelta : 0.01,
+  sizeLatitudeDelta : 0.0922,
+  sizeLongtitudeDelta : 0.0421,
 
 }
 
