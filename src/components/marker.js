@@ -12,6 +12,9 @@ class Marker extends Component {
     render() {
         return (
             <View ref={component => this._root = component} {...this.props}>
+              <View>
+              </View>
+
             </View>
         );
     }

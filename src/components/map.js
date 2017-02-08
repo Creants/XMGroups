@@ -20,6 +20,7 @@ class Map extends Component {
         // varibles
         this._panResponder = {};
         this._previousTop = 0;
+        this._previousHeight = 0;
         this._circleStyles = {};
         this.circle = null;
 
@@ -56,10 +57,11 @@ class Map extends Component {
             onPanResponderTerminate: this._handlePanResponderEnd
         });
         this._previousTop = 0;
+        this._previousHeight = 100;
         this._circleStyles = {
             style: {
-                bottom: -100,
-                backgroundColor: 'green'
+                height: this._previousHeight ,
+                bottom: this._previousTop,
             }
         };
 
@@ -67,18 +69,18 @@ class Map extends Component {
 
     render() {
         return (
-          <View style={styles.container}>
-            <MapView region={this.state.region} onRegionChange={this.onRegionChange} style={styles.mapContent}>
-                <MapView.Marker title="Citi Field" description="center field" coordinate={{
-                    latitude: this.state.region.latitude,
-                    longitude: this.state.region.longitude
-                }} pinColor="blue"/>
-            </MapView>
+            <View style={styles.container}>
+                <MapView region={this.state.region} onRegionChange={this.onRegionChange} style={styles.mapContent}>
+                    <MapView.Marker title="Citi Field" description="center field" coordinate={{
+                        latitude: this.state.region.latitude,
+                        longitude: this.state.region.longitude
+                    }} pinColor="blue"/>
+                </MapView>
 
-            <Marker ref={(circle) => {
-                this.circle = circle;
-            }} style={styles.mapInfo} {...this._panResponder.panHandlers}/>
-          </View>
+                <Marker ref={(circle) => {
+                    this.circle = circle;
+                }} style={styles.mapInfo} {...this._panResponder.panHandlers}/>
+            </View>
         );
     } // render
 
@@ -117,12 +119,10 @@ class Map extends Component {
     } // onRegionChange
 
     _highlight() {
-        this._circleStyles.style.backgroundColor = 'blue';
         this._updateNativeStyles();
     }
 
     _unHighlight() {
-        this._circleStyles.style.backgroundColor = 'green';
         this._updateNativeStyles();
     }
 
@@ -145,13 +145,17 @@ class Map extends Component {
     }
 
     _handlePanResponderMove(e : Object, gestureState : Object) {
-        this._circleStyles.style.bottom = this._previousTop - gestureState.dy;
+        console.log(gestureState.dy);
+        // this._circleStyles.style.bottom = this._previousTop - gestureState.dy;
+        this._circleStyles.style.height = this._previousHeight - gestureState.dy;
         this._updateNativeStyles();
     }
 
     _handlePanResponderEnd(e : Object, gestureState : Object) {
         this._unHighlight();
-        this._previousTop -= gestureState.dy;
+        // this._circleStyles.style.height = this._previousHeight - gestureState.dy;
+        this._previousHeight  -= gestureState.dy;
+        // this._previousTop -= gestureState.dy;
     }
 
 } // end

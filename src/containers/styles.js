@@ -41,14 +41,14 @@ var styles = StyleSheet.create({
     },
 
     mapInfo: {
-        height: 200,
+        height: 0,
         alignSelf: 'stretch',
         backgroundColor: 'blue',
         position: 'absolute',
         left: 0,
         right: 0,
-        bottom: -50,
-        backgroundColor: 'red'
+        bottom: 0,
+        backgroundColor: 'transparent'
     },
 
 });
