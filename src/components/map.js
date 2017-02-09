@@ -19,10 +19,11 @@ class Map extends Component {
 
         // varibles
         this._panResponder = {};
-        this._previousTop = 0;
+        this._previousBottom = 0;
         this._previousHeight = 0;
-        this._circleStyles = {};
-        this.circle = null;
+        this._nextHeight = 0;
+        this._mapInfoStyles = {};
+        this.mapInfo = null;
 
         // init state
         this.state = {
@@ -56,12 +57,12 @@ class Map extends Component {
             onPanResponderRelease: this._handlePanResponderEnd,
             onPanResponderTerminate: this._handlePanResponderEnd
         });
-        this._previousTop = 0;
+        this._previousBottom = 0;
         this._previousHeight = 100;
-        this._circleStyles = {
+        this._mapInfoStyles = {
             style: {
-                height: this._previousHeight ,
-                bottom: this._previousTop,
+                height: this._previousHeight,
+                bottom: this._previousBottom
             }
         };
 
@@ -77,8 +78,8 @@ class Map extends Component {
                     }} pinColor="blue"/>
                 </MapView>
 
-                <Marker ref={(circle) => {
-                    this.circle = circle;
+                <Marker ref={(mapInfo) => {
+                    this.mapInfo = mapInfo;
                 }} style={styles.mapInfo} {...this._panResponder.panHandlers}/>
             </View>
         );
@@ -114,9 +115,36 @@ class Map extends Component {
         navigator.geolocation.clearWatch(this.watchID);
     }
 
+    //----------------------- update ------------------------/
+
+    // change location
     onRegionChange(region) {
         this.setState({region});
     } // onRegionChange
+
+    // call when move mapinfo
+    // check top
+    // check height
+    _mapInfoAnimationMove(dy : Number) {
+
+        this._nextHeight = this._previousHeight - dy;
+        if (this._nextHeight >= 100 && this._nextHeight <= sizes.screenHeight - 100) {
+          this._mapInfoStyles.style.height = this._nextHeight;
+        }
+
+    }
+
+    _mapInfoAnimationEnd(dy : Number) {
+
+      if (this._nextHeight <= 250) {
+          this._previousHeight = 100;
+      } else {
+          this._previousHeight = sizes.screenHeight - 100;
+      }
+      this._mapInfoStyles.style.height = this._previousHeight;
+      this._nextHeight = this._previousHeight;
+      
+    }
 
     _highlight() {
         this._updateNativeStyles();
@@ -127,35 +155,41 @@ class Map extends Component {
     }
 
     _updateNativeStyles() {
-        this.circle && this.circle.setNativeProps(this._circleStyles);
+        this.mapInfo && this.mapInfo.setNativeProps(this._mapInfoStyles);
     }
 
+    //----------------------- pan respond ------ -- -- -- -- -- -- -- -- -- /
+
     _handleStartShouldSetPanResponder(e : Object, gestureState : Object) : boolean {
-        // Should we become active when the user presses down on the circle?
+        // Should we become active when the user presses down on the mapInfo?
         return true;
     }
 
     _handleMoveShouldSetPanResponder(e : Object, gestureState : Object) : boolean {
-        // Should we become active when the user moves a touch over the circle?
+        // Should we become active when the user moves a touch over the mapInfo?
         return true;
     }
 
+    // Begin Pan
     _handlePanResponderGrant(e : Object, gestureState : Object) {
         this._highlight();
     }
 
+    // Move
     _handlePanResponderMove(e : Object, gestureState : Object) {
-        console.log(gestureState.dy);
-        // this._circleStyles.style.bottom = this._previousTop - gestureState.dy;
-        this._circleStyles.style.height = this._previousHeight - gestureState.dy;
+
+        this._mapInfoAnimationMove(gestureState.dy);
         this._updateNativeStyles();
     }
 
+    // End Pan
     _handlePanResponderEnd(e : Object, gestureState : Object) {
+
         this._unHighlight();
-        // this._circleStyles.style.height = this._previousHeight - gestureState.dy;
-        this._previousHeight  -= gestureState.dy;
-        // this._previousTop -= gestureState.dy;
+
+        this._mapInfoAnimationEnd(gestureState.dy);
+        this._updateNativeStyles();
+
     }
 
 } // end
