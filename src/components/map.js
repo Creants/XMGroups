@@ -5,10 +5,13 @@ import
 {
     View,
     StyleSheet,
-    PanResponder
+    PanResponder,
+    Linking,
+    Text
 }
 from 'react-native';
 import Marker from './marker';
+import MapUtils from '../commons/mapUtils'
 
 import MapView from 'react-native-maps';
 
@@ -24,6 +27,8 @@ class Map extends Component {
         this._nextHeight = 0;
         this._mapInfoStyles = {};
         this.mapInfo = null;
+        this._distance = 0;
+        this.oldRegion = null;
 
         // init state
         this.state = {
@@ -31,12 +36,15 @@ class Map extends Component {
                 latitude: 0,
                 longitude: 0,
                 latitudeDelta: sizes.sizeLatitudeDelta,
-                longitudeDelta: sizes.sizeLongtitudeDelta
-            }
+                longitudeDelta: sizes.sizeLongitudeDelta
+            },
+            mapData: []
         };
 
         // onRegionChange bind
         this.onRegionChange = this.onRegionChange.bind(this);
+        this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
+        this.onCalloutPress = this.onCalloutPress.bind(this);
 
         // PanResponder callback bind
         this._handleStartShouldSetPanResponder = this._handleStartShouldSetPanResponder.bind(this);
@@ -65,17 +73,19 @@ class Map extends Component {
                 bottom: this._previousBottom
             }
         };
-
+        this._distance = 2500;
     } // componentWillMount
 
     render() {
         return (
             <View style={styles.container}>
-                <MapView region={this.state.region} onRegionChange={this.onRegionChange} style={styles.mapContent}>
-                    <MapView.Marker title="Citi Field" description="center field" coordinate={{
-                        latitude: this.state.region.latitude,
-                        longitude: this.state.region.longitude
-                    }} pinColor="blue"/>
+                <MapView region={this.state.region} onRegionChange={this.onRegionChange} showsUserLocation={true} style={styles.mapContent} onRegionChangeComplete={this.onRegionChangeComplete}>
+
+                    {this.state.mapData.map(marker => (<MapView.Marker key={marker.id} coordinate={{
+                        latitude: marker.location.latitude,
+                        longitude: marker.location.longitude
+                    }} title={marker.name} pinColor="orange" description={marker.description} onCalloutPress={() => this.onCalloutPress(marker.link)}/>))}
+
                 </MapView>
 
                 <Marker ref={(mapInfo) => {
@@ -95,7 +105,7 @@ class Map extends Component {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
                     latitudeDelta: sizes.sizeLatitudeDelta,
-                    longitudeDelta: sizes.sizeLongtitudeDelta
+                    longitudeDelta: sizes.sizeLongitudeDelta
                 }
             });
 
@@ -115,13 +125,57 @@ class Map extends Component {
         navigator.geolocation.clearWatch(this.watchID);
     }
 
-    //----------------------- update ------------------------/
+    //----------------------- map location fetch ------------------------/
+    _gymsLocationFromApi(latitude : Number, longitude : Number, distance : Number) {
+
+        var apiUrl = 'http://192.168.1.210:3000/GYMs/fbfind?location=' + latitude + "," + longitude + '&distance=' + distance;
+        fetch(apiUrl).then((response) => response.json()).then((responseJSON) => {
+            this.setState({mapData: responseJSON});
+        }).catch((error) => {
+            this.setState({mapData: []});
+            alert('gym location from api error, source: map.js, error: ' + error);
+        });
+
+    }
+
+    //----------------------- update map info ------------------------/
+
+    _checkIsRequestWithNewRegion(region) {
+        var preRegion = this.oldRegion
+            ? this.oldRegion
+            : this.state.region;
+        var ab = MapUtils.getDistance(preRegion.latitude, preRegion.longitude, region.latitude, region.longitude);
+        return (ab > this.distance) || !this.oldRegion;
+    }
 
     // change location
     onRegionChange(region) {
+
         this.setState({region});
+        if (this._checkIsRequestWithNewRegion(region)) {
+            this.oldRegion = region;
+            this._gymsLocationFromApi(region.latitude, region.longitude, this._distance);
+        }
+
     } // onRegionChange
 
+    onRegionChangeComplete(region) {
+        this.setState({region});
+        if (this._checkIsRequestWithNewRegion(region)) {
+            this.oldRegion = region;
+            this._gymsLocationFromApi(region.latitude, region.longitude, this._distance);
+        }
+    }
+
+    onCalloutPress(link) {
+        Linking.canOpenURL(link).then(supported => {
+            if (supported) {
+                Linking.openURL(link);
+            } else {
+                console.log('Don\'t know how to open URI: ' + link);
+            }
+        });
+    }
     // call when move mapinfo
     // check top
     // check height
@@ -129,21 +183,21 @@ class Map extends Component {
 
         this._nextHeight = this._previousHeight - dy;
         if (this._nextHeight >= 100 && this._nextHeight <= sizes.screenHeight - 100) {
-          this._mapInfoStyles.style.height = this._nextHeight;
+            this._mapInfoStyles.style.height = this._nextHeight;
         }
 
     }
 
     _mapInfoAnimationEnd(dy : Number) {
 
-      if (this._nextHeight <= 250) {
-          this._previousHeight = 100;
-      } else {
-          this._previousHeight = sizes.screenHeight - 100;
-      }
-      this._mapInfoStyles.style.height = this._previousHeight;
-      this._nextHeight = this._previousHeight;
-      
+        if (this._nextHeight <= 250) {
+            this._previousHeight = 100;
+        } else {
+            this._previousHeight = sizes.screenHeight - 100;
+        }
+        this._mapInfoStyles.style.height = this._previousHeight;
+        this._nextHeight = this._previousHeight;
+
     }
 
     _highlight() {
@@ -158,7 +212,7 @@ class Map extends Component {
         this.mapInfo && this.mapInfo.setNativeProps(this._mapInfoStyles);
     }
 
-    //----------------------- pan respond ------ -- -- -- -- -- -- -- -- -- /
+    //----------------------- pan gesture respond ------ -- -- -- -- -- -- -- -- -- /
 
     _handleStartShouldSetPanResponder(e : Object, gestureState : Object) : boolean {
         // Should we become active when the user presses down on the mapInfo?
