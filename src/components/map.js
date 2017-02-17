@@ -11,7 +11,9 @@ import
 }
 from 'react-native';
 import Marker from './marker';
-import MapUtils from '../commons/mapUtils'
+import MapUtils from '../commons/mapUtils';
+
+var apiConfig = require('../commons/apiConfig');
 
 import MapView from 'react-native-maps';
 
@@ -79,7 +81,7 @@ class Map extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <MapView region={this.state.region} onRegionChange={this.onRegionChange} showsUserLocation={true} style={styles.mapContent} onRegionChangeComplete={this.onRegionChangeComplete}>
+                <MapView showsUserLocation={true} style={styles.mapContent} region={this.state.region} onRegionChange={this.onRegionChange}  onRegionChangeComplete={this.onRegionChangeComplete}>
 
                     {this.state.mapData.map(marker => (<MapView.Marker key={marker.id} coordinate={{
                         latitude: marker.location.latitude,
@@ -128,7 +130,7 @@ class Map extends Component {
     //----------------------- map location fetch ------------------------/
     _gymsLocationFromApi(latitude : Number, longitude : Number, distance : Number) {
 
-        var apiUrl = 'http://192.168.1.210:3000/GYMs/fbfind?location=' + latitude + "," + longitude + '&distance=' + distance;
+        var apiUrl = apiConfig.domain + 'GYMs/fbfind?location=' + latitude + "," + longitude + '&distance=' + distance;
         fetch(apiUrl).then((response) => response.json()).then((responseJSON) => {
             this.setState({mapData: responseJSON});
         }).catch((error) => {
