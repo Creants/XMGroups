@@ -5,8 +5,7 @@ var {height, width} = Dimensions.get('window');
 var styles = StyleSheet.create({
 
     container: {
-        flex: 1,
-        backgroundColor: '#F6A623'
+        flex: 1
     },
 
     containerCenter: {
@@ -64,8 +63,31 @@ var styles = StyleSheet.create({
         },
         flex: 1,
         top: 20
+    },
 
-    }
+    itemSearch: {
+        borderWidth: 1,
+        borderColor: '#F6A623',
+        borderRadius: 4,
+
+    },
+
+    textNormal: {
+      fontSize: 14,
+      fontFamily: 'Helvetica',
+    },
+
+    textTitle: {
+      fontSize: 14,
+      fontFamily: 'Helvetica',
+      fontWeight: 'bold'
+    },
+
+    textDescription: {
+      fontSize: 14,
+      fontFamily: 'HelveticaNeue',
+      color: '#7B7976',
+    },
 
 });
 

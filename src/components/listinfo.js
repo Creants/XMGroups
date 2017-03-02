@@ -4,6 +4,7 @@ import React, {Component} from 'react';
 import {View, Text, ListView} from 'react-native';
 
 let ItemInfo = require('./items/iteminfo');
+let ItemSearch = require('./items/itemsearch');
 
 
 class ListInfoView extends Component {
@@ -40,6 +41,13 @@ class ListInfoView extends Component {
         return (
             <View ref={component => this._root = component} {...this.props}>
                 <View style={styles.mapInfoBorder}>
+
+                    <ItemSearch style={{height: 36,}}>
+                    </ItemSearch>
+
+                    <View style={{height: 1, backgroundColor: '#F5A62333', margin: 10}}>
+                    </View>
+
                     <ListView  dataSource={this.state.dataSource} renderRow={this._renderRow.bind(this)}/>
                 </View>
 

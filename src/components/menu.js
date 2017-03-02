@@ -28,7 +28,7 @@ class Menu extends Component {
 
     render() {
         return (
-            <View style={[styles.container]}>
+            <View style={[styles.container, {backgroundColor: colors.bgContainer}]}>
                 <ListView contentContainerStyle={styles.listviewCenter} dataSource={this.state.dataSource} renderRow={this.createButtonCatelogry.bind(this)}/>
             </View>
         ); // end return

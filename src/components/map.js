@@ -150,7 +150,7 @@ class Map extends Component {
 
         this._updateNativeStyles();
 
-    } //  componentDidMount
+    }
 
     componentWillUnmount() {
         navigator.geolocation.clearWatch(this.watchID);
@@ -166,8 +166,6 @@ class Map extends Component {
     _gymsLocationFromApi(latitude : Number, longitude : Number, distance : Number) {
 
         var apiUrl = apiConfig.domain + 'api/searchplace?latitude=' + latitude + "&longitude=" + longitude + '&radius=' + distance + '&type=gym';
-        console.log(apiUrl);
-
         fetch(apiUrl).then((response) => response.json()).then((responseJSON) => {
 
             // console.log(responseJSON);
@@ -178,7 +176,7 @@ class Map extends Component {
         }).catch((error) => {
 
             console.log('request error ' + JSON.stringify(error));
-            alert (JSON.stringify(error));
+            alert(JSON.stringify(error));
             // this._gymsLocationFromApi(this.oldRegion.latitude, this.oldRegion.longitude, this._distance);
 
         });
@@ -188,7 +186,7 @@ class Map extends Component {
     /**
      * [_checkIsRequestWithNewRegion description]
      * @param  {Object} region [description]
-     * @return {bool}        [description]
+     * @return  {bool}              [description]
      */
     _checkIsRequestWithNewRegion(region : Object) {
 
@@ -238,9 +236,7 @@ class Map extends Component {
         });
     }
 
-    // call when move mapinfo
-    // check top
-    // check height
+
     _mapInfoAnimationMove(dy : Number) {
 
         this._nextHeight = this._previousHeight - dy;
@@ -262,7 +258,6 @@ class Map extends Component {
 
     }
 
-    //----------------------- pan gesture respond ------ -- -- -- -- -- -- -- -- -- /
 
     _handleStartShouldSetPanResponder(e : Object, gestureState : Object) : boolean {
         // Should we become active when the user presses down on the mapInfo?
@@ -274,19 +269,19 @@ class Map extends Component {
         return true;
     }
 
-    // Begin Pan
+
     _handlePanResponderGrant(e : Object, gestureState : Object) {
         this._highlight();
     }
 
-    // Move
+
     _handlePanResponderMove(e : Object, gestureState : Object) {
 
         this._mapInfoAnimationMove(gestureState.dy);
         this._updateNativeStyles();
     }
 
-    // End Pan
+
     _handlePanResponderEnd(e : Object, gestureState : Object) {
 
         this._unHighlight();
