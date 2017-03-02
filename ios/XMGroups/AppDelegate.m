@@ -7,18 +7,30 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+
 #import "AppDelegate.h"
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
+#define CHANGE_PORT
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+
+//  [GMSServices provideAPIKey:@"AIzaSyBc0bNfmUPwWbohOHf1U-PRcRbCGYZpo48"];
   NSURL *jsCodeLocation;
 
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+
+  #if CHANGE_PORT
+      // Run from locally running dev server
+      jsCodeLocation = [NSURL URLWithString:@"http://localhost:8082/index.ios.bundle?platform=ios&dev=true"];
+  #else
+      // Run on device with code coming from dev server on PC (change the IP to your PCs IP)
+      jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+  #endif
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"XMGroups"

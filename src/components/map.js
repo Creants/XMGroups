@@ -1,5 +1,6 @@
 'use-strict'
 
+// import
 import React, {Component} from 'react';
 import
 {
@@ -10,13 +11,14 @@ import
     Text
 }
 from 'react-native';
-import Marker from './marker';
+import MapView from 'react-native-maps';
+import ListInfoView from './listinfo';
 import MapUtils from '../commons/mapUtils';
 
+// require
 var apiConfig = require('../commons/apiConfig');
 
-import MapView from 'react-native-maps';
-
+// class
 class Map extends Component {
 
     constructor(props) {
@@ -31,22 +33,25 @@ class Map extends Component {
         this.mapInfo = null;
         this._distance = 0;
         this.oldRegion = null;
+        watchID : (null :
+            ? number);
 
-        // init state
+        // init state {region, markers}
         this.state = {
             region: {
-                latitude: 0,
+                longitudeDelta: sizes.sizeLongitudeDelta,
                 longitude: 0,
-                latitudeDelta: sizes.sizeLatitudeDelta,
-                longitudeDelta: sizes.sizeLongitudeDelta
+                latitude: 0,
+                latitudeDelta: sizes.sizeLatitudeDelta
             },
-            mapData: []
+            markers: []
         };
 
-        // onRegionChange bind
-        this.onRegionChange = this.onRegionChange.bind(this);
-        this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
+        // _onRegionChange bind
+        this._onRegionChange = this._onRegionChange.bind(this);
+        this._onRegionChangeComplete = this._onRegionChangeComplete.bind(this);
         this.onCalloutPress = this.onCalloutPress.bind(this);
+        this._checkIsRequestWithNewRegion = this._checkIsRequestWithNewRegion.bind(this);
 
         // PanResponder callback bind
         this._handleStartShouldSetPanResponder = this._handleStartShouldSetPanResponder.bind(this);
@@ -55,10 +60,12 @@ class Map extends Component {
         this._handlePanResponderMove = this._handlePanResponderMove.bind(this);
         this._handlePanResponderEnd = this._handlePanResponderEnd.bind(this);
         this._handlePanResponderEnd = this._handlePanResponderEnd.bind(this);
+
     }
 
     componentWillMount() {
 
+        // panResponder
         this._panResponder = PanResponder.create({
             onStartShouldSetPanResponder: this._handleStartShouldSetPanResponder,
             onMoveShouldSetPanResponder: this._handleMoveShouldSetPanResponder,
@@ -67,6 +74,8 @@ class Map extends Component {
             onPanResponderRelease: this._handlePanResponderEnd,
             onPanResponderTerminate: this._handlePanResponderEnd
         });
+
+        // valt
         this._previousBottom = 0;
         this._previousHeight = 100;
         this._mapInfoStyles = {
@@ -75,51 +84,71 @@ class Map extends Component {
                 bottom: this._previousBottom
             }
         };
-        this._distance = 2500;
-    } // componentWillMount
+        this._distance = 2000;
+
+    }
 
     render() {
-        return (
-            <View style={styles.container}>
-                <MapView showsUserLocation={true} style={styles.mapContent} region={this.state.region} onRegionChange={this.onRegionChange}  onRegionChangeComplete={this.onRegionChangeComplete}>
 
-                    {this.state.mapData.map(marker => (<MapView.Marker key={marker.id} coordinate={{
+        const {region, markers} = this.state;
+
+        return (
+
+            <View style={styles.container}>
+
+                <MapView showsUserLocation={true} loadingEnabled={true} style={styles.mapContent} region={this.state.region} _onRegionChange={this._onRegionChangeComplete} _onRegionChangeComplete={this._onRegionChangeComplete}>
+
+                    {markers.map(marker => (<MapView.Marker key={marker.id} coordinate={{
                         latitude: marker.location.latitude,
                         longitude: marker.location.longitude
                     }} title={marker.name} pinColor="orange" description={marker.description} onCalloutPress={() => this.onCalloutPress(marker.link)}/>))}
 
                 </MapView>
 
-                <Marker ref={(mapInfo) => {
+                <ListInfoView ref={(mapInfo) => {
                     this.mapInfo = mapInfo;
-                }} style={styles.mapInfo} {...this._panResponder.panHandlers}/>
+                }} style={styles.mapInfo} {...this._panResponder.panHandlers} data={markers}/>
+
             </View>
+
         );
-    } // render
+
+    }
 
     componentDidMount() {
 
-        this._updateNativeStyles();
-
+        // get current Location
         navigator.geolocation.getCurrentPosition((position) => {
-            this.setState({
-                region: {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                    latitudeDelta: sizes.sizeLatitudeDelta,
-                    longitudeDelta: sizes.sizeLongitudeDelta
-                }
-            });
+
+            // console.log('\n getCurrentPosition: ' + JSON.stringify(position));
+
+            var region = {
+                longitudeDelta: sizes.sizeLongitudeDelta,
+                longitude: Number(position.coords.longitude),
+                latitude: Number(position.coords.latitude),
+                latitudeDelta: sizes.sizeLatitudeDelta
+            }
+
+            if (this._checkIsRequestWithNewRegion(region)) {
+                this._gymsLocationFromApi(region.latitude, region.longitude, this._distance);
+                this.oldRegion = region;
+            }
+
+            this.setState({region: region});
 
         }, (error) => alert(JSON.stringify(error)), {
-            enableHighAccuracy: false,
-            timeout: 20000
+
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 1000
+
         });
 
-        this.watchID = navigator.geolocation.watchPosition((position) => {
-            var lastPosition = JSON.stringify(position);
-            this.setState({lastPosition});
+        this.watchID = navigator.geolocation.watchPosition((position, error) => {
+            // console.log('\n watchPosition: ' + JSON.stringify(position) + JSON.stringify(error));
         });
+
+        this._updateNativeStyles();
 
     } //  componentDidMount
 
@@ -127,45 +156,75 @@ class Map extends Component {
         navigator.geolocation.clearWatch(this.watchID);
     }
 
-    //----------------------- map location fetch ------------------------/
+    /**
+     * [_gymsLocationFromApi description]
+     * @param  {Number} latitude            [description]
+     * @param  {Number} longitude         [description]
+     * @param  {Number} distance          [description]
+     * @return  {Array}     markers list     [description]
+     */
     _gymsLocationFromApi(latitude : Number, longitude : Number, distance : Number) {
 
-        var apiUrl = apiConfig.domain + 'GYMs/fbfind?location=' + latitude + "," + longitude + '&distance=' + distance;
+        var apiUrl = apiConfig.domain + 'api/searchplace?latitude=' + latitude + "&longitude=" + longitude + '&radius=' + distance + '&type=gym';
+        console.log(apiUrl);
+
         fetch(apiUrl).then((response) => response.json()).then((responseJSON) => {
-            this.setState({mapData: responseJSON});
+
+            // console.log(responseJSON);
+            if (responseJSON && responseJSON !== undefined) {
+                this.setState({markers: responseJSON});
+            }
+
         }).catch((error) => {
-            this.setState({mapData: []});
-            alert('gym location from api error, source: map.js, error: ' + error);
+
+            console.log('request error ' + JSON.stringify(error));
+            alert (JSON.stringify(error));
+            // this._gymsLocationFromApi(this.oldRegion.latitude, this.oldRegion.longitude, this._distance);
+
         });
 
     }
 
-    //----------------------- update map info ------------------------/
+    /**
+     * [_checkIsRequestWithNewRegion description]
+     * @param  {Object} region [description]
+     * @return {bool}        [description]
+     */
+    _checkIsRequestWithNewRegion(region : Object) {
 
-    _checkIsRequestWithNewRegion(region) {
-        var preRegion = this.oldRegion
-            ? this.oldRegion
-            : this.state.region;
+        if (!this.oldRegion)
+            return true;
+
+        var preRegion = this.oldRegion;
         var ab = MapUtils.getDistance(preRegion.latitude, preRegion.longitude, region.latitude, region.longitude);
-        return (ab > this.distance) || !this.oldRegion;
+        console.log(ab);
+        return (ab >= (this._distance / 2));
     }
 
-    // change location
-    onRegionChange(region) {
+    /**
+     * [_onRegionChange description]
+     * @param  {Object} region [description]
+     */
+    _onRegionChange(region : Object) {
 
-        this.setState({region});
-        if (this._checkIsRequestWithNewRegion(region)) {
-            this.oldRegion = region;
-            this._gymsLocationFromApi(region.latitude, region.longitude, this._distance);
-        }
+        this.setState({region: region});
 
-    } // onRegionChange
+    }
 
-    onRegionChangeComplete(region) {
-        this.setState({region});
-        if (this._checkIsRequestWithNewRegion(region)) {
-            this.oldRegion = region;
-            this._gymsLocationFromApi(region.latitude, region.longitude, this._distance);
+    /**
+     * [_onRegionChangeComplete description]
+     * @param  {[type]} region [description]
+     * @return {[type]}        [description]
+     */
+    _onRegionChangeComplete(region) {
+
+        this.setState({region: region});
+
+        if (this.oldRegion) {
+            if (this._checkIsRequestWithNewRegion(region)) {
+                this._gymsLocationFromApi(region.latitude, region.longitude, this._distance);
+                this.oldRegion = region;
+            }
         }
     }
 
@@ -178,6 +237,7 @@ class Map extends Component {
             }
         });
     }
+
     // call when move mapinfo
     // check top
     // check height
@@ -200,18 +260,6 @@ class Map extends Component {
         this._mapInfoStyles.style.height = this._previousHeight;
         this._nextHeight = this._previousHeight;
 
-    }
-
-    _highlight() {
-        this._updateNativeStyles();
-    }
-
-    _unHighlight() {
-        this._updateNativeStyles();
-    }
-
-    _updateNativeStyles() {
-        this.mapInfo && this.mapInfo.setNativeProps(this._mapInfoStyles);
     }
 
     //----------------------- pan gesture respond ------ -- -- -- -- -- -- -- -- -- /
@@ -246,6 +294,18 @@ class Map extends Component {
         this._mapInfoAnimationEnd(gestureState.dy);
         this._updateNativeStyles();
 
+    }
+
+    _highlight() {
+        this._updateNativeStyles();
+    }
+
+    _unHighlight() {
+        this._updateNativeStyles();
+    }
+
+    _updateNativeStyles() {
+        this.mapInfo && this.mapInfo.setNativeProps(this._mapInfoStyles);
     }
 
 } // end
