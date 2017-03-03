@@ -29,7 +29,6 @@ class ItemSearch extends Component {
                     paddingRight: 8,
                     textAlign: 'center',
                     textAlignVertical: 'center',
-                    backgroundColor: 'blue'
 
                 }}></TextInput>
             </View>

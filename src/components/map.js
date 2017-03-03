@@ -75,15 +75,6 @@ class Map extends Component {
             onPanResponderTerminate: this._handlePanResponderEnd
         });
 
-        this.scollerPanResponder = PanResponder.create({
-            onStartShouldSetPanResponder: (e, g) => true,
-            onPanResponderGrant: () => {
-                console.log('GRANTED TO SCROLLER');
-            },
-            onPanResponderMove: (evt, gestureState) => {
-                console.log('SCROLLER MOVED');
-            }
-        });
 
         // valt
         this._previousBottom = 0;
