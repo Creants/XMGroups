@@ -75,6 +75,16 @@ class Map extends Component {
             onPanResponderTerminate: this._handlePanResponderEnd
         });
 
+        this.scollerPanResponder = PanResponder.create({
+            onStartShouldSetPanResponder: (e, g) => true,
+            onPanResponderGrant: () => {
+                console.log('GRANTED TO SCROLLER');
+            },
+            onPanResponderMove: (evt, gestureState) => {
+                console.log('SCROLLER MOVED');
+            }
+        });
+
         // valt
         this._previousBottom = 0;
         this._previousHeight = 100;
@@ -236,7 +246,6 @@ class Map extends Component {
         });
     }
 
-
     _mapInfoAnimationMove(dy : Number) {
 
         this._nextHeight = this._previousHeight - dy;
@@ -258,7 +267,6 @@ class Map extends Component {
 
     }
 
-
     _handleStartShouldSetPanResponder(e : Object, gestureState : Object) : boolean {
         // Should we become active when the user presses down on the mapInfo?
         return true;
@@ -269,18 +277,15 @@ class Map extends Component {
         return true;
     }
 
-
     _handlePanResponderGrant(e : Object, gestureState : Object) {
         this._highlight();
     }
-
 
     _handlePanResponderMove(e : Object, gestureState : Object) {
 
         this._mapInfoAnimationMove(gestureState.dy);
         this._updateNativeStyles();
     }
-
 
     _handlePanResponderEnd(e : Object, gestureState : Object) {
 
