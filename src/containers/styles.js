@@ -42,7 +42,6 @@ var styles = StyleSheet.create({
     mapInfo: {
         height: 0,
         alignSelf: 'stretch',
-        backgroundColor: 'blue',
         position: 'absolute',
         left: 0,
         right: 0,
@@ -51,7 +50,7 @@ var styles = StyleSheet.create({
     },
 
     mapInfoBorder: {
-        backgroundColor: '#F5F3EE',
+        backgroundColor: '#F5F3EEBF',
         borderWidth: 1,
         borderColor: '#FFFFFF',
         borderRadius: 12,

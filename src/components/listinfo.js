@@ -45,7 +45,7 @@ class ListInfoView extends Component {
                     <ItemSearch style={{height: sizes.searchBoxHeight, }}>
                     </ItemSearch>
 
-                    <View style={{height: 1, backgroundColor: '#F5A62333', margin: 10}}>
+                    <View style={{height: 1, backgroundColor: '#F5A62333', marginLeft: 10, marginRight: 10, marginTop: 10}}>
                     </View>
 
                     <ListView  dataSource={this.state.dataSource} renderRow={this._renderRow.bind(this)}/>

@@ -18,6 +18,7 @@ class ItemSearch extends Component {
                     marginTop: 10,
                     marginLeft: 40,
                     marginRight: 40,
+                    marginBottom: 0,
                     justifyContent: 'center',
                     alignItems: "center",
                 },

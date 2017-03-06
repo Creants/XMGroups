@@ -8,7 +8,7 @@ var sizes = {
     sizeLongitudeDelta: 0.0421,
 
     screenHeight: height,
-    screenWidth: width
+    screenWidth: width,
 
     searchBoxHeight: 36,
 }

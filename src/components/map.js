@@ -36,6 +36,8 @@ class Map extends Component {
         watchID : (null :
             ? number);
 
+        this.deltaHeight = 77;
+
         // init state {region, markers}
         this.state = {
             region: {
@@ -78,7 +80,7 @@ class Map extends Component {
 
         // valt
         this._previousBottom = 0;
-        this._previousHeight = 100;
+        this._previousHeight = this.deltaHeight ;
         this._mapInfoStyles = {
             style: {
                 height: this._previousHeight,
@@ -240,7 +242,7 @@ class Map extends Component {
     _mapInfoAnimationMove(dy : Number) {
 
         this._nextHeight = this._previousHeight - dy;
-        if (this._nextHeight >= 100 && this._nextHeight <= sizes.screenHeight - 100) {
+        if (this._nextHeight >= this.deltaHeight && this._nextHeight <= sizes.screenHeight - this.deltaHeight) {
             this._mapInfoStyles.style.height = this._nextHeight;
         }
 
@@ -249,9 +251,9 @@ class Map extends Component {
     _mapInfoAnimationEnd(dy : Number) {
 
         if (this._nextHeight <= 250) {
-            this._previousHeight = 100;
+            this._previousHeight = this.deltaHeight;
         } else {
-            this._previousHeight = sizes.screenHeight - 100;
+            this._previousHeight = sizes.screenHeight - this.deltaHeight;
         }
         this._mapInfoStyles.style.height = this._previousHeight;
         this._nextHeight = this._previousHeight;
