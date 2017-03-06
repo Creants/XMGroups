@@ -9,6 +9,8 @@ var sizes = {
 
     screenHeight: height,
     screenWidth: width
+
+    searchBoxHeight: 36,
 }
 
 module.exports = sizes;

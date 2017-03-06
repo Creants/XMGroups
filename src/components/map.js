@@ -265,7 +265,7 @@ class Map extends Component {
 
     _handleMoveShouldSetPanResponder(e : Object, gestureState : Object) : boolean {
         // Should we become active when the user moves a touch over the mapInfo?
-        return true;
+        return false;
     }
 
     _handlePanResponderGrant(e : Object, gestureState : Object) {

@@ -42,7 +42,7 @@ class ListInfoView extends Component {
             <View ref={component => this._root = component} {...this.props}>
                 <View style={styles.mapInfoBorder}>
 
-                    <ItemSearch style={{height: 36,}}>
+                    <ItemSearch style={{height: sizes.searchBoxHeight, }}>
                     </ItemSearch>
 
                     <View style={{height: 1, backgroundColor: '#F5A62333', margin: 10}}>

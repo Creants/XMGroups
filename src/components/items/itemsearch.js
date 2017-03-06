@@ -18,18 +18,20 @@ class ItemSearch extends Component {
                     marginTop: 10,
                     marginLeft: 40,
                     marginRight: 40,
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    alignItems: "center",
                 },
                 this.props.style,
                 styles.itemSearch
             ]}>
-                <TextInput autoCapitalize="none" placeholder="Enter text to see events" autoCorrect={false} style={{
+                <TextInput underlineColorAndroid="transparent" autoCapitalize="none" placeholder="Enter text to see events" autoCorrect={false} style={{
                     color: 'black',
                     paddingLeft: 8,
                     paddingRight: 8,
+                    paddingBottom: 0,
                     textAlign: 'center',
                     textAlignVertical: 'center',
-
+                    flex: 1
                 }}></TextInput>
             </View>
         );
