@@ -168,7 +168,7 @@ class Map extends Component {
      */
     _gymsLocationFromApi(latitude : Number, longitude : Number, distance : Number) {
 
-        var apiUrl = apiConfig.domain + 'api/searchplace?latitude=' + latitude + "&longitude=" + longitude + '&radius=' + distance + '&type=gym';
+        var apiUrl = apiConfig.domain + 'api/search?latitude=' + latitude + "&longitude=" + longitude + '&radius=' + distance + '&type=gym';
         fetch(apiUrl).then((response) => response.json()).then((responseJSON) => {
 
             // console.log(responseJSON);
@@ -179,7 +179,8 @@ class Map extends Component {
         }).catch((error) => {
 
             console.log('request error ' + JSON.stringify(error));
-            alert(JSON.stringify(error));
+            console.log(" API url log" + apiUrl);
+            alert( "fetch API errors \n" + JSON.stringify(error));
             // this._gymsLocationFromApi(this.oldRegion.latitude, this.oldRegion.longitude, this._distance);
 
         });
