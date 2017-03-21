@@ -8,22 +8,33 @@
  */
 
 
+
 #import "AppDelegate.h"
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
+@import GoogleMaps;
+@import GooglePlaces;
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 
-//  [GMSServices provideAPIKey:@"AIzaSyBc0bNfmUPwWbohOHf1U-PRcRbCGYZpo48"];
+  [GMSServices provideAPIKey:@"AIzaSyBDFzwDTJ3-C_AAaAB1fSjFw6viPPQ1Jas"];
+  [GMSPlacesClient provideAPIKey:@"AIzaSyBDFzwDTJ3-C_AAaAB1fSjFw6viPPQ1Jas"];
+  
   NSURL *jsCodeLocation;
+//
+//
+//  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+  
+  NSString *serverIP = @"192.168.1.8";
+  NSString *jsCodeUrlString = [NSString stringWithFormat:@"http://%@:8081/index.ios.bundle?platform=ios&dev=true", serverIP];
+  NSString *jsBundleUrlString = [jsCodeUrlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  jsCodeLocation = [NSURL URLWithString:jsBundleUrlString];
 
-
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
 
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation

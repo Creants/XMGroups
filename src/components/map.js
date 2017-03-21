@@ -49,6 +49,8 @@ class Map extends Component {
             markers: []
         };
 
+        this._onPressMap = this._onPressMap.bind(this);
+
         // _onRegionChange bind
         this._onRegionChange = this._onRegionChange.bind(this);
         this._onRegionChangeComplete = this._onRegionChangeComplete.bind(this);
@@ -77,10 +79,9 @@ class Map extends Component {
             onPanResponderTerminate: this._handlePanResponderEnd
         });
 
-
         // valt
         this._previousBottom = 0;
-        this._previousHeight = this.deltaHeight ;
+        this._previousHeight = this.deltaHeight;
         this._mapInfoStyles = {
             style: {
                 height: this._previousHeight,
@@ -99,7 +100,13 @@ class Map extends Component {
 
             <View style={styles.container}>
 
-                <MapView showsUserLocation={true} loadingEnabled={true} style={styles.mapContent} region={this.state.region} _onRegionChange={this._onRegionChangeComplete} _onRegionChangeComplete={this._onRegionChangeComplete}>
+                <MapView
+                  provider={MapView.PROVIDER_GOOGLE}
+                  showsUserLocation={true} loadingEnabled={true}
+                  style={styles.mapContent} region={this.state.region}
+                  _onRegionChange={this._onRegionChangeComplete}
+                  _onRegionChangeComplete={this._onRegionChangeComplete}
+                  onPress={this._onPressMap} >
 
                     {markers.map(marker => (<MapView.Marker key={marker.id} coordinate={{
                         latitude: marker.location.latitude,
@@ -180,7 +187,7 @@ class Map extends Component {
 
             console.log('request error ' + JSON.stringify(error));
             console.log(" API url log" + apiUrl);
-            alert( "fetch API errors \n" + JSON.stringify(error));
+            alert("fetch API errors \n" + JSON.stringify(error));
             // this._gymsLocationFromApi(this.oldRegion.latitude, this.oldRegion.longitude, this._distance);
 
         });
@@ -238,6 +245,18 @@ class Map extends Component {
                 console.log('Don\'t know how to open URI: ' + link);
             }
         });
+    }
+
+    _onPressMap(e) {
+
+      var obj = this._makeEvent(e);
+      alert ("press on map"  + obj.data);
+    }
+
+    _makeEvent(e) {
+      return {
+        data: e.nativeEvent ? e.nativeEvent : e,
+      };
     }
 
     _mapInfoAnimationMove(dy : Number) {
